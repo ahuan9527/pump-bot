@@ -38,3 +38,8 @@ Pump 扫链机器人，通过智能化、自动化的买卖操作帮助投资者
 
 - `npm install`
 - `npm run buy`
+
+## SOL节点
+
+- 如果链接不上SOL节点，可以申请一个免费的
+- https://dashboard.quicknode.com/
