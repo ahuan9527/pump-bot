@@ -16,11 +16,7 @@ import { MinimalMarketLayoutV3 } from '../market';
 export const RAYDIUM_LIQUIDITY_PROGRAM_ID_V4 = MAINNET_PROGRAM_ID.AmmV4;
 export const OPENBOOK_PROGRAM_ID = MAINNET_PROGRAM_ID.OPENBOOK_MARKET;
 
-export const MINIMAL_MARKET_STATE_LAYOUT_V3 = struct([
-  publicKey('eventQueue'),
-  publicKey('bids'),
-  publicKey('asks'),
-]);
+export const MINIMAL_MARKET_STATE_LAYOUT_V3 = struct([publicKey('eventQueue'), publicKey('bids'), publicKey('asks')]);
 
 export function createPoolKeys(
   id: PublicKey,
@@ -62,11 +58,7 @@ export function createPoolKeys(
   };
 }
 
-export async function getTokenAccounts(
-  connection: Connection,
-  owner: PublicKey,
-  commitment?: Commitment,
-) {
+export async function getTokenAccounts(connection: Connection, owner: PublicKey, commitment?: Commitment) {
   const tokenResp = await connection.getTokenAccountsByOwner(
     owner,
     {
@@ -74,7 +66,6 @@ export async function getTokenAccounts(
     },
     commitment,
   );
-
   const accounts: TokenAccount[] = [];
   for (const { pubkey, account } of tokenResp.value) {
     accounts.push({
@@ -83,6 +74,5 @@ export async function getTokenAccounts(
       accountInfo: SPL_ACCOUNT_LAYOUT.decode(account.data),
     });
   }
-
   return accounts;
 }

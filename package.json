@@ -1,5 +1,5 @@
 {
-  "name": "solana-sniper-bot",
+  "name": "pumpfun-bot",
   "author": "Fund",
   "scripts": {
     "buy": "ts-node buy.ts"

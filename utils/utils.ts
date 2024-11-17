@@ -143,9 +143,6 @@ const handleSlotChange = (args: SlotChangeInput) => async (_: SlotInfo) => {
     );
     const txId = await connection.sendTransaction(tx, [walletKeyPair]);
   } catch (err) {
-    if (typeof err === 'string') {
-    } else if (err instanceof Error) {
-    }
   } finally {
     isRunning.next(false);
   }
