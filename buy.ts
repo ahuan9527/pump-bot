@@ -384,7 +384,6 @@ function loadSnipeList() {
   if (!USE_SNIPE_LIST) {
     return;
   }
-  const count = snipeList.length;
   const data = fs.readFileSync(path.join(__dirname, 'snipe-list.txt'), 'utf-8');
   snipeList = data
     .split('\n')
