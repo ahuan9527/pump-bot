@@ -433,7 +433,6 @@ const runListener = async () => {
       },
     ],
   );
-
   const openBookSubscriptionId = solanaConnection.onProgramAccountChange(
     OPENBOOK_PROGRAM_ID,
     async (updatedAccountInfo) => {
@@ -455,7 +454,6 @@ const runListener = async () => {
       },
     ],
   );
-
   if (AUTO_SELL) {
     const walletSubscriptionId = solanaConnection.onProgramAccountChange(
       TOKEN_PROGRAM_ID,

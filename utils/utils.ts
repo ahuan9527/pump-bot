@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { logger } from '../buy';
 import { Logger } from 'pino';
 import { Keypair, Connection, SlotInfo, clusterApiUrl, SystemProgram, PublicKey, Transaction } from '@solana/web3.js';
 import { BehaviorSubject } from 'rxjs';
@@ -91,24 +90,6 @@ export const retrieveTokenValueByAddressDexScreener = async (tokenAddress: strin
   }
 };
 
-export const retrieveTokenValueByAddressBirdeye = async (tokenAddress: string) => {
-  const apiKey = retrieveEnvVariable('BIRDEYE_API_KEY', logger);
-  const url = `https://public-api.birdeye.so/public/price?address=${tokenAddress}`;
-  try {
-    const response: string = (
-      await axios.get(url, {
-        headers: {
-          'X-API-KEY': apiKey,
-        },
-      })
-    ).data.data.value;
-    if (response) return parseFloat(response);
-    return undefined;
-  } catch (e) {
-    return undefined;
-  }
-};
-
 type SlotChangeInput = {
   connection: Connection;
   walletKeyPair: Keypair;
@@ -164,8 +145,6 @@ const handleSlotChange = (args: SlotChangeInput) => async (_: SlotInfo) => {
 export const retrieveTokenValueByAddress = async (tokenAddress: string) => {
   const dexScreenerPrice = await retrieveTokenValueByAddressDexScreener(tokenAddress);
   if (dexScreenerPrice) return dexScreenerPrice;
-  const birdEyePrice = await retrieveTokenValueByAddressBirdeye(tokenAddress);
-  if (birdEyePrice) return birdEyePrice;
   return undefined;
 };
 
