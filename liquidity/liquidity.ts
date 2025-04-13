@@ -3,20 +3,45 @@ import {
   Liquidity,
   LiquidityPoolKeys,
   Market,
-  TokenAccount,
-  SPL_ACCOUNT_LAYOUT,
-  publicKey,
-  struct,
   MAINNET_PROGRAM_ID,
   LiquidityStateV4,
 } from '@raydium-io/raydium-sdk';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, AccountLayout } from '@solana/spl-token';
 import { MinimalMarketLayoutV3 } from '../market';
+import { publicKey } from '@solana/buffer-layout-utils';
+import { struct, Layout } from '@solana/buffer-layout';
+
+// 定义 TokenAccount 接口
+interface TokenAccount {
+  pubkey: PublicKey;
+  programId: PublicKey;
+  accountInfo: {
+    mint: PublicKey;
+    owner: PublicKey;
+    amount: bigint;
+    delegateOption: number;
+    delegate: PublicKey;
+    state: number;
+    isNativeOption: number;
+    isNative: bigint;
+    delegatedAmount: bigint;
+    closeAuthorityOption: number;
+    closeAuthority: PublicKey;
+  };
+}
 
 export const RAYDIUM_LIQUIDITY_PROGRAM_ID_V4 = MAINNET_PROGRAM_ID.AmmV4;
 export const OPENBOOK_PROGRAM_ID = MAINNET_PROGRAM_ID.OPENBOOK_MARKET;
 
-export const MINIMAL_MARKET_STATE_LAYOUT_V3 = struct([publicKey('eventQueue'), publicKey('bids'), publicKey('asks')]);
+export const MINIMAL_MARKET_STATE_LAYOUT_V3: Layout<{
+  eventQueue: PublicKey;
+  bids: PublicKey;
+  asks: PublicKey;
+}> = struct([
+  publicKey('eventQueue'),
+  publicKey('bids'),
+  publicKey('asks')
+]);
 
 export function createPoolKeys(
   id: PublicKey,
@@ -71,7 +96,7 @@ export async function getTokenAccounts(connection: Connection, owner: PublicKey,
     accounts.push({
       pubkey,
       programId: account.owner,
-      accountInfo: SPL_ACCOUNT_LAYOUT.decode(account.data),
+      accountInfo: AccountLayout.decode(account.data),
     });
   }
   return accounts;

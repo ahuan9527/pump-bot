@@ -1,10 +1,14 @@
 import { Commitment, Connection, PublicKey } from '@solana/web3.js';
-import { GetStructureSchema, MARKET_STATE_LAYOUT_V3 } from '@raydium-io/raydium-sdk';
+import { MARKET_STATE_LAYOUT_V3 } from '@raydium-io/raydium-sdk';
 import { MINIMAL_MARKET_STATE_LAYOUT_V3 } from '../liquidity';
 
 export type MinimalMarketStateLayoutV3 = typeof MINIMAL_MARKET_STATE_LAYOUT_V3;
-export type MinimalMarketLayoutV3 =
-  GetStructureSchema<MinimalMarketStateLayoutV3>;
+export type MinimalMarketLayoutV3 = {
+  bids: PublicKey;
+  asks: PublicKey;
+  eventQueue: PublicKey;
+  baseMint: PublicKey;
+};
 
 export async function getMinimalMarketV3(
   connection: Connection,
@@ -13,11 +17,17 @@ export async function getMinimalMarketV3(
 ): Promise<MinimalMarketLayoutV3> {
   const marketInfo = await connection.getAccountInfo(marketId, {
     commitment,
-    dataSlice: {
-      offset: MARKET_STATE_LAYOUT_V3.offsetOf('eventQueue'),
-      length: 32 * 3,
-    },
   });
 
-  return MINIMAL_MARKET_STATE_LAYOUT_V3.decode(marketInfo!.data);
+  if (!marketInfo) {
+    throw new Error(`Market account ${marketId.toString()} not found`);
+  }
+
+  const decoded = MARKET_STATE_LAYOUT_V3.decode(marketInfo.data);
+  return {
+    bids: decoded.bids,
+    asks: decoded.asks,
+    eventQueue: decoded.eventQueue,
+    baseMint: decoded.baseMint,
+  };
 }
